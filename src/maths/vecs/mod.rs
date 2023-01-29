@@ -11,10 +11,12 @@ struct Vec3 {
 
 // impl<T: Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T> + Clone> Vec3<T> {
 impl Vec3 {
+    /// Creates a 3D Vector
     pub fn new(x: Real, y: Real, z: Real) -> Self {
         Vec3 { x, y, z }
     }
 
+    /// Vector addition
     pub fn add(&self, vec: Vec3) -> Vec3 {
         Vec3 {
             x: self.x + vec.x,
@@ -23,6 +25,7 @@ impl Vec3 {
         }
     }
 
+    /// Vector substraction
     pub fn sub(&self, vec: Vec3) -> Vec3 {
         Vec3 {
             x: self.x - vec.x,
@@ -31,10 +34,20 @@ impl Vec3 {
         }
     }
 
-    pub fn magnitud(&self) -> Real {
+    /// Calculates the magnitud (size) of a vector
+    pub fn magnitude(&self) -> Real {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 
+    /// Transforms the vector in a unit vector,
+    /// useful to obtain only the direction
+    pub fn normalize(&self) -> Option<Vec3> {
+        let m = self.magnitude();
+
+        self.scalar_div(m)
+    }
+
+    /// Scalar vector multiplication
     pub fn scalar_mul(&self, n: Real) -> Vec3 {
         Vec3 {
             x: self.x * n,
@@ -43,14 +56,32 @@ impl Vec3 {
         }
     }
 
+    /// Scalar vector division
+    pub fn scalar_div(&self, n: Real) -> Option<Vec3> {
+        if n == 0.0 {
+            return None;
+        }
+
+        Some(Vec3 {
+            x: self.x / n,
+            y: self.y / n,
+            z: self.z / n,
+        })
+    }
+
+    /// Dot product of vector
     pub fn dot_product(&self, vec: Vec3) -> Real {
         self.x * vec.x + self.y * vec.y + self.z * vec.z
     }
 
-    // | i  j  k  |
-    // | x  y  z  | = (y*z' - y'*z)i - (x*z' - x'*z)j + (x*y' - x'y)k
-    // | x' y' z' |
-    //
+    /// Cross product of two vectors. Results in a different vector orthoganl
+    /// `self` and `vec` (using right hand rule)
+    ///
+    /// It can be calculated using determinats
+    /// | i  j  k  |
+    /// | x  y  z  | = (y*z' - y'*z)i - (x*z' - x'*z)j + (x*y' - x'y)k
+    /// | x' y' z' |
+    ///
     pub fn cross_product(&self, vec: Vec3) -> Vec3 {
         Vec3 {
             x: self.y * vec.z - vec.y * self.z,
@@ -59,6 +90,7 @@ impl Vec3 {
         }
     }
 
+    /// Inverts a vector
     pub fn invert(&self) -> Vec3 {
         self.scalar_mul(-1.0)
     }
@@ -112,6 +144,17 @@ mod tests {
     fn size() {
         let a = Vec3::new(2.0, 2.0, 2.0);
 
-        assert_eq!(a.magnitud(), 3.4641016)
+        assert_eq!(a.magnitude(), 3.4641016)
+    }
+
+    #[test]
+    fn normalize() {
+        let a = Vec3::new(2.0, 0.0, 0.0);
+
+        assert_eq!(a.normalize().unwrap(), Vec3::new(1.0, 0.0, 0.0));
+
+        let b = Vec3::new(0.0, 0.0, 0.0);
+
+        assert_eq!(b.normalize(), None)
     }
 }
