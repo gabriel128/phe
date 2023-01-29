@@ -1,15 +1,17 @@
 #![allow(dead_code)]
 
+type Real = f32;
+
 #[derive(Debug, PartialEq, PartialOrd)]
 struct Vec3 {
-    x: f32,
-    y: f32,
-    z: f32,
+    x: Real,
+    y: Real,
+    z: Real,
 }
 
 // impl<T: Add<Output = T> + Mul<Output = T> + Div<Output = T> + Sub<Output = T> + Clone> Vec3<T> {
 impl Vec3 {
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
+    pub fn new(x: Real, y: Real, z: Real) -> Self {
         Vec3 { x, y, z }
     }
 
@@ -29,11 +31,11 @@ impl Vec3 {
         }
     }
 
-    pub fn magnitud(&self) -> f32 {
+    pub fn magnitud(&self) -> Real {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 
-    pub fn scalar_mul(&self, n: f32) -> Vec3 {
+    pub fn scalar_mul(&self, n: Real) -> Vec3 {
         Vec3 {
             x: self.x * n,
             y: self.y * n,
@@ -41,7 +43,7 @@ impl Vec3 {
         }
     }
 
-    pub fn dot_product(&self, vec: Vec3) -> f32 {
+    pub fn dot_product(&self, vec: Vec3) -> Real {
         self.x * vec.x + self.y * vec.y + self.z * vec.z
     }
 
